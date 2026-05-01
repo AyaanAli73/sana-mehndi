@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
 <style>
+/* ──── CSS VARIABLES ──── */
 :root {
   --gold: #c9973a;
   --deep-gold: #9b6f1e;
@@ -19,6 +20,7 @@
   --ink: #0d0805;
 }
 
+/* ──── RESET & BASE ──── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: smooth; overflow-x: hidden; }
@@ -27,8 +29,13 @@ body {
   background-color: var(--ink);
   color: var(--cream);
   font-family: 'Cormorant Garamond', serif;
-  cursor: none;
+  cursor: none; /* Custom cursor used */
   overflow-x: hidden;
+}
+
+/* Prevent background scroll when mobile menu is open */
+body.menu-open {
+  overflow: hidden;
 }
 
 /* ──── CUSTOM CURSOR ──── */
@@ -65,12 +72,307 @@ body {
 }
 @keyframes trail-fade { to { opacity: 0; transform: translate(-50%,-50%) scale(0); } }
 
+/* Disable custom cursor on touch devices for better UX */
+@media (hover: none) and (pointer: coarse) {
+  body { cursor: auto; }
+  #cursor, #cursor-ring, .cursor-dot-trail { display: none !important; }
+  .btn-gold, .btn-outline, a, .service-card, .menu-toggle, .floating-wa, .faq-item { cursor: pointer; }
+}
+
 /* ──── NOISE TEXTURE OVERLAY ──── */
 body::before {
   content: '';
   position: fixed; inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
   pointer-events: none; z-index: 1000; opacity: 0.4;
+}
+
+/* ──── NAV & MOBILE MENU (APPLE LIQUID GLASS) ──── */
+nav {
+  position: fixed; 
+  top: 1.5rem; 
+  left: 50%; 
+  transform: translateX(-50%);
+  width: 92%; max-width: 1200px;
+  z-index: 500;
+  padding: 0.8rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 100px; /* Floating pill shape */
+  background: rgba(20, 10, 5, 0.25);
+  /* Apple glassmorphism core: blur + saturate */
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+nav.scrolled {
+  top: 0.8rem;
+  background: rgba(10, 6, 3, 0.7);
+  border-color: rgba(201, 151, 58, 0.25);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  padding: 0.6rem 2.5rem;
+}
+
+.nav-brand {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.8rem;
+  color: var(--gold);
+  text-decoration: none;
+  position: relative;
+  z-index: 502; /* Stay above mobile menu */
+  text-shadow: 0 0 20px rgba(201,151,58,0.4);
+}
+
+/* Desktop Links */
+.nav-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex; gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(245,234,216,0.8);
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s;
+  padding: 0.5rem 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* For better readability on glass */
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+
+/* Mobile Menu Toggle Button (Hidden on Desktop) */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  position: relative;
+  z-index: 502; /* Stay above mobile menu */
+  width: 44px; height: 44px;
+}
+
+/* Mobile decorative elements inside menu */
+.nav-mobile-footer, .mobile-menu-mandala {
+  display: none;
+}
+
+/* ── Mobile Navbar Styles & Unique 3D Animation ── */
+@media (max-width: 768px) {
+  nav {
+    top: 0; left: 0; width: 100%; transform: none;
+    border-radius: 0;
+    padding: 1rem 5%;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(13, 8, 5, 0.45); 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  
+  nav.scrolled {
+    top: 0;
+    border-radius: 0;
+    padding: 1rem 5%;
+    background: rgba(10, 6, 3, 0.75);
+    border-color: rgba(201, 151, 58, 0.15);
+  }
+
+  /* The Hamburger Button */
+  .menu-toggle {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .menu-toggle .line {
+    display: block;
+    width: 28px; 
+    height: 1px; 
+    background: var(--gold);
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.5s, width 0.5s;
+    transform-origin: center;
+  }
+  
+  .menu-toggle .sparkle {
+    color: var(--gold);
+    font-size: 12px;
+    line-height: 1;
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.5s;
+  }
+
+  /* Active Hamburger Animation */
+  body.menu-open .menu-toggle .line-1 {
+    transform: translateY(16px) rotate(45deg);
+    width: 32px;
+  }
+  body.menu-open .menu-toggle .line-2 {
+    transform: translateY(-16px) rotate(-45deg);
+    width: 32px;
+  }
+  body.menu-open .menu-toggle .sparkle {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+
+  /* Full Screen Overlay (Apple iOS Modal Blur) */
+  .nav-wrapper {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh; height: 100dvh;
+    background: rgba(10, 5, 2, 0.6);
+    backdrop-filter: blur(35px) saturate(200%);
+    -webkit-backdrop-filter: blur(35px) saturate(200%);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 501;
+    clip-path: circle(0px at calc(100% - 40px) 40px);
+    transition: clip-path 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+
+  body.menu-open .nav-wrapper {
+    clip-path: circle(150% at calc(100% - 40px) 40px);
+  }
+
+  /* Large background decor for mobile menu */
+  .mobile-menu-mandala {
+    display: block;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120vw; height: 120vw;
+    opacity: 0.03;
+    pointer-events: none;
+    animation: mandala-spin 40s linear infinite;
+    z-index: -1;
+  }
+
+  /* List layout */
+  .nav-links {
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+    width: 100%;
+    perspective: 1000px; /* 3D Space for links */
+  }
+
+  /* Unique 3D Flip & Blur Entrance Animation */
+  .nav-links a {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-style: italic;
+    letter-spacing: 0.05em;
+    text-transform: none;
+    color: var(--cream);
+    display: block;
+    opacity: 0;
+    transform-origin: top center;
+    transform: translateY(40px) rotateX(-60deg) scale(0.9);
+    filter: blur(8px);
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease, filter 0.5s ease;
+    text-shadow: none;
+  }
+
+  .nav-links a::after { display: none; } /* Remove underline on mobile */
+
+  /* Staggered entrance animations when open */
+  body.menu-open .nav-links li:nth-child(1) a { transition-delay: 0.2s; opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); filter: blur(0); }
+  body.menu-open .nav-links li:nth-child(2) a { transition-delay: 0.3s; opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); filter: blur(0); }
+  body.menu-open .nav-links li:nth-child(3) a { transition-delay: 0.4s; opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); filter: blur(0); }
+  body.menu-open .nav-links li:nth-child(4) a { transition-delay: 0.5s; opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); filter: blur(0); }
+  body.menu-open .nav-links li:nth-child(5) a { transition-delay: 0.6s; opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); filter: blur(0); }
+
+  /* Mobile Footer inside Menu */
+  .nav-mobile-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 4rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  body.menu-open .nav-mobile-footer {
+    transition-delay: 0.8s;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav-mobile-footer p {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(201,151,58,0.6);
+  }
+
+  .nav-mobile-footer a {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    text-decoration: none;
+  }
+}
+
+/* ──── FLOATING WHATSAPP BUTTON ──── */
+.floating-wa {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--gold), var(--deep-gold));
+  color: var(--ink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(201,151,58,0.4);
+  z-index: 499;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+  animation: float-pulse 2s infinite;
+  cursor: none;
+}
+.floating-wa:hover {
+  transform: scale(1.15) rotate(-5deg);
+  box-shadow: 0 6px 25px rgba(201,151,58,0.6);
+  animation: none;
+  color: var(--ink);
+}
+.floating-wa svg {
+  width: 32px;
+  height: 32px;
+}
+@keyframes float-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(201,151,58, 0.5); }
+  70% { box-shadow: 0 0 0 15px rgba(201,151,58, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(201,151,58, 0); }
+}
+@media (max-width: 768px) {
+  .floating-wa { bottom: 20px; right: 20px; width: 55px; height: 55px; }
+  .floating-wa svg { width: 28px; height: 28px; }
 }
 
 /* ──── HERO ──── */
@@ -198,7 +500,6 @@ body::before {
   position: relative; overflow: hidden;
   clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
   transition: all 0.4s;
-  cursor: none;
 }
 .btn-gold:hover { background: var(--cream); border-color: var(--cream); transform: translateY(-2px); }
 
@@ -215,7 +516,6 @@ body::before {
   text-decoration: none;
   clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
   transition: all 0.4s;
-  cursor: none;
 }
 .btn-outline:hover { background: rgba(201,151,58,0.1); border-color: var(--gold); }
 
@@ -259,22 +559,6 @@ body::before {
   animation: orbit-spin 20s linear infinite;
 }
 @keyframes orbit-spin { to { transform: rotate(360deg); } }
-
-/* ──── DIVIDER ──── */
-.ornate-divider {
-  display: flex; align-items: center; justify-content: center;
-  gap: 1.5rem;
-  padding: 3rem 0;
-  opacity: 0.5;
-}
-.ornate-divider::before,
-.ornate-divider::after {
-  content: '';
-  flex: 1; max-width: 200px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold));
-}
-.ornate-divider::after { background: linear-gradient(90deg, var(--gold), transparent); }
 
 /* ──── ABOUT ──── */
 #about {
@@ -425,7 +709,7 @@ body::before {
   font-style: normal;
 }
 
-/* Petal gallery layout */
+/* Desktop Petal gallery layout */
 .petal-gallery {
   position: relative;
   width: 100%;
@@ -441,7 +725,6 @@ body::before {
   position: relative;
   overflow: hidden;
   aspect-ratio: 3/4;
-  cursor: none;
 }
 
 .petal-item:nth-child(even) {
@@ -497,7 +780,7 @@ body::before {
 .petal-corner.tl { top: 8px; left: 8px; border-top: 1.5px solid var(--gold); border-left: 1.5px solid var(--gold); }
 .petal-corner.br { bottom: 8px; right: 8px; border-bottom: 1.5px solid var(--gold); border-right: 1.5px solid var(--gold); }
 
-/* ──── SERVICES ──── */
+/* ──── SERVICES (UPGRADED UNIQUE STYLE) ──── */
 #services {
   position: relative;
   padding: 8rem 0;
@@ -512,156 +795,285 @@ body::before {
 
 .services-inner {
   position: relative; z-index: 2;
-  max-width: 1100px; margin: 0 auto;
+  max-width: 1200px; margin: 0 auto;
   padding: 0 5%;
 }
 
-/* Circular service cards arranged on an arc */
-.services-arc {
+.services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin-top: 1rem;
+  gap: 2.5rem;
+  margin-top: 4rem;
 }
 
 .service-card {
   position: relative;
-  padding: 3rem 2rem;
-  border: 1px solid rgba(201,151,58,0.15);
-  background: linear-gradient(135deg, rgba(61,14,14,0.3), rgba(26,9,5,0.6));
-  backdrop-filter: blur(10px);
-  text-align: center;
-  transition: transform 0.5s, border-color 0.4s, box-shadow 0.5s;
-  clip-path: polygon(15px 0%, 100% 0%, calc(100% - 15px) 100%, 0% 100%);
-  cursor: none;
+  padding: 3.5rem 2.5rem;
+  background: rgba(20, 10, 8, 0.4);
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.service-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(201,151,58,0.4) 0%, transparent 50%, rgba(201,151,58,0.1) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+  transition: opacity 0.5s;
+}
+
+/* Large faded background icon for premium look */
+.service-bg-icon {
+  position: absolute;
+  top: -20%; right: -20%;
+  font-size: 15rem;
+  color: rgba(201,151,58,0.03);
+  transition: transform 0.8s ease, color 0.5s ease;
+  pointer-events: none;
 }
 
 .service-card:hover {
-  transform: translateY(-12px);
-  border-color: rgba(201,151,58,0.5);
-  box-shadow: 0 30px 60px rgba(201,151,58,0.1), inset 0 0 30px rgba(201,151,58,0.04);
+  transform: translateY(-10px);
+  background: rgba(26, 12, 8, 0.6);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(201,151,58,0.08);
+}
+.service-card:hover::after { opacity: 1; }
+.service-card:hover .service-bg-icon {
+  transform: scale(1.1) rotate(-15deg);
+  color: rgba(201,151,58,0.07);
 }
 
-.service-card::before {
-  content: '';
-  position: absolute; top: -1px; left: 15px; right: 15px; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0;
-  transition: opacity 0.4s;
+.service-header {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative; z-index: 2;
 }
-.service-card:hover::before { opacity: 1; }
 
 .service-icon {
-  width: 70px; height: 70px;
-  margin: 0 auto 1.5rem;
-  border: 1px solid rgba(201,151,58,0.3);
+  width: 50px; height: 50px;
   border-radius: 50%;
+  background: linear-gradient(135deg, rgba(201,151,58,0.2), transparent);
+  border: 1px solid rgba(201,151,58,0.3);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem;
-  background: radial-gradient(circle, rgba(201,151,58,0.1), transparent);
-  transition: transform 0.4s, border-color 0.4s;
-}
-.service-card:hover .service-icon {
-  transform: rotate(15deg) scale(1.1);
-  border-color: var(--gold);
+  font-size: 1.5rem;
 }
 
 .service-name {
   font-family: 'Playfair Display', serif;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   color: var(--cream);
-  margin-bottom: 0.8rem;
+  line-height: 1.2;
 }
 
 .service-desc {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 300;
-  line-height: 1.8;
-  color: rgba(245,234,216,0.55);
-  margin-bottom: 1.2rem;
+  line-height: 1.7;
+  color: rgba(245,234,216,0.6);
+  margin-bottom: 2rem;
+  position: relative; z-index: 2;
+}
+
+.service-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 1.5rem;
+  position: relative; z-index: 2;
 }
 
 .service-price {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--gold);
   font-style: italic;
 }
 
-/* ──── PROCESS ──── */
+.service-action {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 0.5rem;
+  transition: color 0.3s;
+}
+.service-action:hover { color: var(--gold); }
+.service-action::after { content: '→'; font-size: 1.1em; transition: transform 0.3s; }
+.service-card:hover .service-action::after { transform: translateX(5px); }
+
+
+/* ──── PROCESS (UPGRADED VERTICAL STORY TIMELINE) ──── */
 #process {
+  padding: 8rem 0;
+  background: #0a0503;
+  position: relative;
+  overflow: hidden;
+}
+
+.process-inner {
+  position: relative; z-index: 2;
+  max-width: 1000px; margin: 0 auto;
+  padding: 0 5%;
+}
+
+.timeline {
+  position: relative;
+  margin-top: 5rem;
+  padding: 2rem 0;
+}
+
+/* The vertical glowing line */
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, rgba(201,151,58,0.5) 15%, rgba(201,151,58,0.5) 85%, transparent);
+  transform: translateX(-50%);
+}
+
+.timeline-step {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rem;
+  position: relative;
+  width: 100%;
+}
+.timeline-step:last-child { margin-bottom: 0; }
+
+.timeline-step:nth-child(even) { flex-direction: row-reverse; }
+
+.timeline-content {
+  width: 42%;
+  background: rgba(20, 10, 8, 0.4);
+  border: 1px solid rgba(201,151,58,0.15);
+  padding: 2.5rem;
+  border-radius: 12px;
+  position: relative;
+  transition: transform 0.4s, border-color 0.4s;
+}
+.timeline-content:hover {
+  transform: translateY(-5px);
+  border-color: var(--gold);
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px; height: 20px;
+  background: var(--ink);
+  border: 4px solid var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 0 8px rgba(201,151,58,0.1), 0 0 20px rgba(201,151,58,0.4);
+  z-index: 2;
+  transition: all 0.4s;
+}
+.timeline-step:hover .timeline-dot {
+  background: var(--gold);
+  box-shadow: 0 0 0 12px rgba(201,151,58,0.15), 0 0 30px rgba(201,151,58,0.6);
+}
+
+.timeline-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 4.5rem;
+  color: rgba(201,151,58,0.08);
+  line-height: 1;
+  position: absolute;
+  top: -1rem; right: 1rem;
+  font-style: italic;
+  pointer-events: none;
+}
+.timeline-step:nth-child(even) .timeline-num { right: auto; left: 1rem; }
+
+.timeline-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: var(--cream);
+  margin-bottom: 1rem;
+  position: relative; z-index: 2;
+}
+
+.timeline-desc {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: rgba(245,234,216,0.6);
+  line-height: 1.8;
+  position: relative; z-index: 2;
+}
+
+/* ──── NEW SECTION: FAQ (ACCORDION) ──── */
+#faq {
   padding: 8rem 0;
   background: #0d0805;
   position: relative;
   overflow: hidden;
 }
 
-.process-line {
-  position: absolute;
-  top: 50%; left: 10%; right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,151,58,0.3) 20%, rgba(201,151,58,0.3) 80%, transparent);
-}
-
-.process-inner {
-  position: relative; z-index: 2;
-  max-width: 1100px; margin: 0 auto;
+.faq-inner {
+  max-width: 800px;
+  margin: 0 auto;
   padding: 0 5%;
+  position: relative; z-index: 2;
 }
 
-.process-steps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+.faq-list {
   margin-top: 4rem;
-  position: relative;
+  border-top: 1px solid rgba(201,151,58,0.2);
 }
 
-.process-step {
-  text-align: center;
-  position: relative;
-  padding-top: 2rem;
+.faq-item {
+  border-bottom: 1px solid rgba(201,151,58,0.2);
+  transition: background 0.3s;
 }
 
-.step-number {
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.8rem 0;
   font-family: 'Playfair Display', serif;
-  font-size: 4rem;
-  color: rgba(201,151,58,0.1);
-  line-height: 1;
-  position: absolute;
-  top: -1.5rem; left: 50%;
-  transform: translateX(-50%);
+  font-size: 1.25rem;
+  color: var(--cream);
   font-style: italic;
 }
 
-.step-dot {
-  width: 14px; height: 14px;
-  background: var(--gold);
-  border-radius: 50%;
-  margin: 0 auto 2rem;
-  box-shadow: 0 0 0 6px rgba(201,151,58,0.15), 0 0 20px rgba(201,151,58,0.3);
-  animation: pulse-dot 2.5s ease-in-out infinite;
-}
-@keyframes pulse-dot {
-  0%, 100% { box-shadow: 0 0 0 6px rgba(201,151,58,0.15), 0 0 20px rgba(201,151,58,0.3); }
-  50% { box-shadow: 0 0 0 12px rgba(201,151,58,0.08), 0 0 35px rgba(201,151,58,0.4); }
+.faq-icon {
+  color: var(--gold);
+  font-size: 1.5rem;
+  font-style: normal;
+  transition: transform 0.4s ease;
 }
 
-.step-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  color: var(--cream);
-  margin-bottom: 0.8rem;
+.faq-item.active .faq-icon {
+  transform: rotate(45deg);
 }
 
-.step-desc {
-  font-size: 0.85rem;
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.faq-answer-inner {
+  padding-bottom: 2rem;
+  font-size: 0.95rem;
   font-weight: 300;
-  color: rgba(245,234,216,0.5);
+  color: rgba(245,234,216,0.6);
   line-height: 1.8;
 }
 
-/* ──── TESTIMONIAL ──── */
+/* ──── TESTIMONIALS ──── */
 #testimonials {
   padding: 8rem 0;
   background: linear-gradient(180deg, #0d0805, #16080a);
@@ -815,59 +1227,6 @@ footer {
   color: rgba(245,234,216,0.3);
 }
 
-/* ──── NAV ──── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 500;
-  padding: 1.5rem 5%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.5s;
-}
-
-nav.scrolled {
-  background: rgba(10,6,3,0.92);
-  backdrop-filter: blur(20px);
-  padding: 1rem 5%;
-  border-bottom: 1px solid rgba(201,151,58,0.1);
-}
-
-.nav-brand {
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.6rem;
-  color: var(--gold);
-  text-decoration: none;
-  cursor: none;
-}
-
-.nav-links {
-  display: flex; gap: 2.5rem;
-  list-style: none;
-}
-
-.nav-links a {
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(245,234,216,0.65);
-  text-decoration: none;
-  cursor: none;
-  position: relative;
-  transition: color 0.3s;
-}
-
-.nav-links a::after {
-  content: '';
-  position: absolute; bottom: -4px; left: 0;
-  width: 0; height: 1px;
-  background: var(--gold);
-  transition: width 0.4s;
-}
-
-.nav-links a:hover { color: var(--gold); }
-.nav-links a:hover::after { width: 100%; }
-
 /* ──── SCROLL INDICATOR ──── */
 .scroll-indicator {
   position: absolute;
@@ -937,24 +1296,64 @@ nav.scrolled {
   border-image: linear-gradient(90deg, transparent, var(--gold), transparent) 1;
 }
 
-/* ──── RESPONSIVE ──── */
+/* ──── RESPONSIVE OVERRIDES ──── */
 @media (max-width: 768px) {
-  .hero-content { grid-template-columns: 1fr; text-align: center; }
+  #hero {
+    align-items: flex-start;
+    padding-top: 7.5rem;
+    padding-bottom: 4rem;
+  }
+  .hero-content { grid-template-columns: 1fr; text-align: center; gap: 1.8rem; }
   .hero-portrait-wrap { order: -1; }
-  .portrait-frame { width: 220px; height: 280px; }
-  .hero-desc { max-width: 100%; margin-left: auto; margin-right: auto; }
-  .hero-location { justify-content: center; }
-  .cta-wrap { justify-content: center; flex-wrap: wrap; }
+  .portrait-frame { width: 250px; height: 290px; margin: 0 auto; }
+  .hero-desc { max-width: 95%; margin: 1rem auto 1.5rem; line-height: 1.7; }
+  .hero-location { justify-content: center; margin-bottom: 2rem; }
+  .cta-wrap { justify-content: center; flex-direction: column; gap: 1rem; }
+  .cta-wrap a { width: 100%; max-width: 280px; text-align: center; }
+  .scroll-indicator { display: none; }
+
   .about-inner { grid-template-columns: 1fr; }
   .about-mosaic { max-width: 400px; margin: 0 auto; }
-  .petal-gallery { grid-template-columns: repeat(2, 1fr); }
-  .petal-item:nth-child(even) { transform: translateY(20px); }
-  .services-arc { grid-template-columns: 1fr; }
-  .process-steps { grid-template-columns: repeat(2, 1fr); }
+  
+  .petal-gallery { 
+    grid-template-columns: repeat(2, 1fr); 
+    grid-auto-rows: 150px; 
+    gap: 6px; 
+    padding: 0 4%;
+    grid-auto-flow: dense;
+  }
+  .petal-item { aspect-ratio: unset; height: 100%; }
+  .petal-item:nth-child(even) { transform: none !important; }
+  .petal-item:nth-child(1) { grid-column: span 2; grid-row: span 2; } 
+  .petal-item:nth-child(2) { grid-column: span 1; grid-row: span 2; } 
+  .petal-item:nth-child(3) { grid-column: span 1; grid-row: span 1; } 
+  .petal-item:nth-child(4) { grid-column: span 1; grid-row: span 2; } 
+  .petal-item:nth-child(5) { grid-column: span 1; grid-row: span 1; } 
+  .petal-item:nth-child(6) { grid-column: span 2; grid-row: span 2; } 
+  .petal-overlay { padding: 1rem; }
+  .petal-item:nth-child(3) .petal-tag, .petal-item:nth-child(5) .petal-tag { display: none; }
+  .petal-item:nth-child(3) .petal-title, .petal-item:nth-child(5) .petal-title { font-size: 0.95rem; }
+
+  /* Mobile Services Grid */
+  .services-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .service-card { padding: 2.5rem 1.5rem; }
+  .service-bg-icon { font-size: 10rem; }
+
+  /* Mobile Process Timeline */
+  .timeline::before { left: 20px; }
+  .timeline-step, .timeline-step:nth-child(even) { flex-direction: row; justify-content: flex-end; }
+  .timeline-content { width: calc(100% - 50px); padding: 1.8rem; }
+  .timeline-dot { left: 20px; }
+  .timeline-num, .timeline-step:nth-child(even) .timeline-num { top: -1rem; right: 1rem; left: auto; }
+
   .contact-frame { padding: 2.5rem 1.5rem; }
-  .nav-links { display: none; }
   footer { flex-direction: column; gap: 1rem; text-align: center; }
   .mandala-bg, .mandala-fg { display: none; }
+}
+
+@media (max-width: 480px) {
+  .portrait-frame { width: 230px; height: 270px; }
+  .petal-gallery { grid-auto-rows: 120px; }
 }
 </style>
 </head>
@@ -967,13 +1366,49 @@ nav.scrolled {
 <!-- NAV -->
 <nav id="nav">
   <a href="#" class="nav-brand">Sana ✦</a>
-  <ul class="nav-links">
-    <li><a href="#about">Story</a></li>
-    <li><a href="#gallery">Portfolio</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#contact">Book Now</a></li>
-  </ul>
+
+  <!-- Mobile Hamburger Button -->
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+    <span class="line line-1"></span>
+    <span class="sparkle">✦</span>
+    <span class="line line-2"></span>
+  </button>
+
+  <!-- Nav Links Overlay -->
+  <div class="nav-wrapper" id="navWrapper">
+    <!-- Decorative background mandala for mobile menu -->
+    <svg class="mobile-menu-mandala" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(250,250)">
+        <circle fill="none" stroke="#c9973a" stroke-width="1" r="240"/>
+        <circle fill="none" stroke="#c9973a" stroke-width="1" r="200"/>
+        <circle fill="none" stroke="#c9973a" stroke-width="1" r="160"/>
+        <g id="petal-mobile">
+          <ellipse fill="none" stroke="#c9973a" stroke-width="1" rx="30" ry="90" cx="0" cy="-150"/>
+        </g>
+        <use href="#petal-mobile" transform="rotate(45)"/>
+        <use href="#petal-mobile" transform="rotate(90)"/>
+        <use href="#petal-mobile" transform="rotate(135)"/>
+        <use href="#petal-mobile" transform="rotate(180)"/>
+        <use href="#petal-mobile" transform="rotate(225)"/>
+        <use href="#petal-mobile" transform="rotate(270)"/>
+        <use href="#petal-mobile" transform="rotate(315)"/>
+      </g>
+    </svg>
+
+    <ul class="nav-links">
+      <li><a href="#about">Our Story</a></li>
+      <li><a href="#gallery">Portfolio</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#contact">Book Now</a></li>
+    </ul>
+
+    <!-- Info that shows only in mobile menu footer -->
+    <div class="nav-mobile-footer">
+      <p>✦ Unn Patiya, Surat ✦</p>
+      <a href="tel:+919909177685">+91 99091 77685</a>
+    </div>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -1197,7 +1632,7 @@ nav.scrolled {
   </div>
 </section>
 
-<!-- SERVICES -->
+<!-- SERVICES (UPGRADED UNIQUE DESIGN) -->
 <section id="services" class="gold-border-section">
   <div class="services-bg-pattern"></div>
   <div class="services-inner">
@@ -1205,79 +1640,193 @@ nav.scrolled {
       <span class="section-label">✦ Services</span>
       <h2 class="section-title">Crafted for every<br><em>sacred occasion</em></h2>
     </div>
-    <div class="services-arc">
+    <div class="services-grid">
+      <!-- Service 1 -->
       <div class="service-card reveal">
-        <div class="service-icon">🌸</div>
-        <h3 class="service-name">Bridal Mehndi</h3>
-        <p class="service-desc">Full bridal set — both hands to elbow, both feet. Intricate storytelling with hidden names, portraits, and auspicious motifs woven through every petal.</p>
-        <div class="service-price">Starting ₹3,500</div>
+        <div class="service-bg-icon">🌸</div>
+        <div class="service-header">
+          <div class="service-icon">🌸</div>
+          <h3 class="service-name">Bridal<br>Mehndi</h3>
+        </div>
+        <p class="service-desc">Full bridal set for hands and feet. Intricate storytelling, hidden names, portraits, and auspicious traditional motifs.</p>
+        <div class="service-footer">
+          <span class="service-price">₹3,500 onwards</span>
+          <a href="#contact" class="service-action">Enquire</a>
+        </div>
       </div>
-      <div class="service-card reveal" style="transition-delay:0.15s">
-        <div class="service-icon">🌿</div>
-        <h3 class="service-name">Arabic Mehndi</h3>
-        <p class="service-desc">Bold floral patterns with generous negative space. Elegant, quick to apply, deeply staining — perfect for any celebration or casual adornment.</p>
-        <div class="service-price">Starting ₹800</div>
-      </div>
-      <div class="service-card reveal" style="transition-delay:0.3s">
-        <div class="service-icon">💫</div>
-        <h3 class="service-name">Engagement / Ring Ceremony</h3>
-        <p class="service-desc">Delicate, refined designs centred around the ring finger — wrist to fingertip — celebrating the promise of love with artful elegance.</p>
-        <div class="service-price">Starting ₹1,200</div>
-      </div>
+      <!-- Service 2 -->
       <div class="service-card reveal" style="transition-delay:0.1s">
-        <div class="service-icon">🦋</div>
-        <h3 class="service-name">Fusion / Contemporary</h3>
-        <p class="service-desc">Geometric linework, watercolour-inspired patterns, and minimalist art for the modern soul who loves tradition reimagined.</p>
-        <div class="service-price">Starting ₹1,000</div>
+        <div class="service-bg-icon">🌿</div>
+        <div class="service-header">
+          <div class="service-icon">🌿</div>
+          <h3 class="service-name">Arabic<br>Mehndi</h3>
+        </div>
+        <p class="service-desc">Bold floral patterns with elegant negative space. Perfect for bridesmaids, festivals, or casual beautiful adornment.</p>
+        <div class="service-footer">
+          <span class="service-price">₹800 onwards</span>
+          <a href="#contact" class="service-action">Enquire</a>
+        </div>
       </div>
-      <div class="service-card reveal" style="transition-delay:0.25s">
-        <div class="service-icon">🌺</div>
-        <h3 class="service-name">Feet & Payal Design</h3>
-        <p class="service-desc">Intricate foot mehndi complementing the payal — from simple toe-rings to full ankle-to-toe coverage for brides and party wear.</p>
-        <div class="service-price">Starting ₹600</div>
+      <!-- Service 3 -->
+      <div class="service-card reveal" style="transition-delay:0.2s">
+        <div class="service-bg-icon">💍</div>
+        <div class="service-header">
+          <div class="service-icon">💍</div>
+          <h3 class="service-name">Engagement<br>Ceremony</h3>
+        </div>
+        <p class="service-desc">Delicate designs focusing on the ring finger and back hand, celebrating your new beginnings with pure elegance.</p>
+        <div class="service-footer">
+          <span class="service-price">₹1,200 onwards</span>
+          <a href="#contact" class="service-action">Enquire</a>
+        </div>
       </div>
-      <div class="service-card reveal" style="transition-delay:0.4s">
-        <div class="service-icon">✨</div>
-        <h3 class="service-name">Group & Event Bookings</h3>
-        <p class="service-desc">Sangeet nights, haldi functions, baby showers, corporate events — Sana offers group bookings with quick, beautiful designs for every guest.</p>
-        <div class="service-price">Enquire for pricing</div>
+      <!-- Service 4 -->
+      <div class="service-card reveal">
+        <div class="service-bg-icon">🦋</div>
+        <div class="service-header">
+          <div class="service-icon">🦋</div>
+          <h3 class="service-name">Modern<br>Fusion</h3>
+        </div>
+        <p class="service-desc">Geometric lines, mandala art, and watercolour styles for the modern soul who wants a twist on pure tradition.</p>
+        <div class="service-footer">
+          <span class="service-price">₹1,000 onwards</span>
+          <a href="#contact" class="service-action">Enquire</a>
+        </div>
+      </div>
+      <!-- Service 5 -->
+      <div class="service-card reveal" style="transition-delay:0.1s">
+        <div class="service-bg-icon">👣</div>
+        <div class="service-header">
+          <div class="service-icon">👣</div>
+          <h3 class="service-name">Feet &<br>Payal Art</h3>
+        </div>
+        <p class="service-desc">Intricate foot mehndi that perfectly complements your anklets (payal) for the ultimate bridal or festive look.</p>
+        <div class="service-footer">
+          <span class="service-price">₹600 onwards</span>
+          <a href="#contact" class="service-action">Enquire</a>
+        </div>
+      </div>
+      <!-- Service 6 -->
+      <div class="service-card reveal" style="transition-delay:0.2s">
+        <div class="service-bg-icon">✨</div>
+        <div class="service-header">
+          <div class="service-icon">✨</div>
+          <h3 class="service-name">Group<br>Bookings</h3>
+        </div>
+        <p class="service-desc">Sangeet nights, Haldi, or corporate events. Quick and beautiful designs managed smoothly for all your special guests.</p>
+        <div class="service-footer">
+          <span class="service-price">Custom Pricing</span>
+          <a href="#contact" class="service-action">Enquire</a>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PROCESS -->
+<!-- PROCESS (UPGRADED STORY TIMELINE) -->
 <section id="process" class="gold-border-section">
-  <div class="process-line"></div>
   <div class="process-inner">
     <div class="section-title-wrap reveal">
-      <span class="section-label">✦ How it works</span>
-      <h2 class="section-title">From <em>consultation</em><br>to lasting colour</h2>
+      <span class="section-label">✦ The Experience</span>
+      <h2 class="section-title">A journey from <em>vision</em><br>to lasting colour</h2>
     </div>
-    <div class="process-steps">
-      <div class="process-step reveal">
-        <div class="step-number">01</div>
-        <div class="step-dot"></div>
-        <h4 class="step-title">Design Consultation</h4>
-        <p class="step-desc">Share your vision, event type, and inspiration. Together we choose the perfect style and coverage for your occasion.</p>
+    
+    <div class="timeline">
+      <!-- Step 1 -->
+      <div class="timeline-step reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-num">01</div>
+          <h4 class="timeline-title">Design Consultation</h4>
+          <p class="timeline-desc">We begin with a friendly chat via WhatsApp or call. You share your event details, dress styling, and any inspiration photos. Together, we curate a unique design style tailored just for you.</p>
+        </div>
       </div>
-      <div class="process-step reveal" style="transition-delay:0.15s">
-        <div class="step-number">02</div>
-        <div class="step-dot"></div>
-        <h4 class="step-title">Natural Paste Prep</h4>
-        <p class="step-desc">Fresh henna paste made with natural ingredients — no chemicals. Prepared fresh for each client for the deepest, richest stain.</p>
+      <!-- Step 2 -->
+      <div class="timeline-step reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-num">02</div>
+          <h4 class="timeline-title">Fresh Henna Preparation</h4>
+          <p class="timeline-desc">24 hours before your booking, I personally prepare 100% natural, chemical-free henna paste using premium essential oils. This ensures the safest application and the richest, darkest stain.</p>
+        </div>
       </div>
-      <div class="process-step reveal" style="transition-delay:0.3s">
-        <div class="step-number">03</div>
-        <div class="step-dot"></div>
-        <h4 class="step-title">The Application</h4>
-        <p class="step-desc">Sana draws freehand, cone in hand, turning your skin into a canvas. Each stroke placed with intention and love.</p>
+      <!-- Step 3 -->
+      <div class="timeline-step reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-num">03</div>
+          <h4 class="timeline-title">The Application Art</h4>
+          <p class="timeline-desc">I arrive at your location (or you visit my studio). We set up a comfortable space, and I begin freehand drawing your design. It's a relaxing process where your skin becomes a canvas.</p>
+        </div>
       </div>
-      <div class="process-step reveal" style="transition-delay:0.45s">
-        <div class="step-number">04</div>
-        <div class="step-dot"></div>
-        <h4 class="step-title">Aftercare & Bloom</h4>
-        <p class="step-desc">Leave the paste on for 6–8 hours. Rub with a sugar-lemon glaze. Watch your mehndi deepen to a rich mahogany over 48 hours.</p>
+      <!-- Step 4 -->
+      <div class="timeline-step reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-num">04</div>
+          <h4 class="timeline-title">Aftercare & Bloom</h4>
+          <p class="timeline-desc">Once dried, I provide a homemade lemon-sugar sealant. Keep the paste on for 6-8 hours. As you scrape it off, the color will naturally oxidize into a deep mahogany red over the next 48 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEW SECTION: FAQ (ACCORDION) -->
+<section id="faq" class="gold-border-section">
+  <div class="faq-inner">
+    <div class="section-title-wrap reveal" style="margin-bottom:2rem;">
+      <span class="section-label">✦ Common Queries</span>
+      <h2 class="section-title">Everything you need<br><em>to know</em></h2>
+    </div>
+    
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Do you use chemical or "fast-color" cones?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Absolutely not. I strictly use 100% organic, natural henna powder mixed with safe essential oils (like eucalyptus or lavender) and lemon juice. Chemical cones can burn the skin and leave fake colors. My natural paste is safe for all skin types and yields a beautiful, authentic dark stain.
+          </div>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Do you provide home-visit services?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Yes! While I have a studio space in Unn Patiya, Surat, I frequently travel to clients' homes and event venues across Surat for Bridal and Group bookings. Travel charges may apply depending on the exact distance.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>How far in advance should I book my bridal mehndi?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            For the wedding season (November to February), I recommend booking at least 2-3 months in advance to secure your dates. For non-bridal or festive mehndi, 1-2 weeks prior notice is usually sufficient.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>How can I get the darkest stain possible?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Leave the paste on for at least 6-8 hours (overnight is best). Avoid washing your hands with water/soap for 12 hours after scraping the crust off. Apply eucalyptus oil or Vicks vapor rub, and keep your hands warm. The stain will reach its peak darkness within 48 hours.
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1337,46 +1886,100 @@ nav.scrolled {
 <footer>
   <span class="footer-brand">Sana ✦ Mehndi Art</span>
   <span class="footer-note">Unn Patiya, Surat · Handcrafted with love since 2016</span>
-  <span class="footer-note">© 2025 All rights reserved</span>
+  <span class="footer-note">© 2026 All rights reserved</span>
 </footer>
 
+<!-- FLOATING WHATSAPP BUTTON -->
+<a href="https://wa.me/919909177685" class="floating-wa" target="_blank" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 32 32" fill="currentColor">
+    <path d="M16 2.3c-7.6 0-13.7 6.1-13.7 13.7 0 2.4.6 4.8 1.8 6.9l-2 7.1 7.3-1.9c2 .1 4.3 1.7 6.6 1.7 7.6 0 13.7-6.1 13.7-13.7S23.6 2.3 16 2.3zm0 22.8c-2 0-4-.5-5.8-1.5l-.4-.2-4.3 1.1 1.2-4.2-.3-.4c-1.1-1.7-1.7-3.7-1.7-5.8 0-6.4 5.2-11.6 11.6-11.6s11.6 5.2 11.6 11.6-5.2 11.6-11.6 11.6zm6.3-8.5c-.3-.2-2-.9-2.3-1-.3-.1-.5-.2-.7.2-.2.3-.9 1-.1 1.2s.5 1.5.7 1.6c.2.1.4.2.1.7-.3.5-1.3 2-2.5 3.3-1.2 1.3-1.4 1.5-1.9 1.5s-.9-.2-1.2-.5c-.3-.3-.6-.7-.9-1-.2-.3-.4-.5-.6-.5-.2 0-.5 0-.7.1-.2.1-1.2.5-2.8 1.8-1.3 1-1.8 1.6-2 1.9s0 .5.3.7c.2.2.5.6.7.9.2.3.3.5.5.9.1.3.1.6 0 .8s-1.3 3.1-1.8 4.2c-.4 1.1-.9 1-.1 1s.6 0 1 0c.4 0 1-.1 1.6-.8s2.2-2.6 2.6-3.1.5-.9.7-1.1c.2-.2.3-.5.1-.9-.2-.3-2.3-5.5-3.1-7.5z"/>
+  </svg>
+</a>
+
 <script>
-// ── Cursor ──────────────────────────────────────────────
+// ── Mobile Menu Toggle Logic ──────────────────────────────
+const menuToggle = document.getElementById('menuToggle');
+const body = document.body;
+const navLinks = document.querySelectorAll('.nav-links a');
+
+// Toggle menu on button click
+menuToggle.addEventListener('click', () => {
+  body.classList.toggle('menu-open');
+});
+
+// Close menu when a link is clicked
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    body.classList.remove('menu-open');
+  });
+});
+
+// ── FAQ Accordion Logic ───────────────────────────────────
+const faqItems = document.querySelectorAll('.faq-item');
+faqItems.forEach(item => {
+  const question = item.querySelector('.faq-question');
+  question.addEventListener('click', () => {
+    const isActive = item.classList.contains('active');
+    // Close all other items
+    faqItems.forEach(i => {
+      i.classList.remove('active');
+      i.querySelector('.faq-answer').style.maxHeight = null;
+    });
+    // Toggle current item
+    if (!isActive) {
+      item.classList.add('active');
+      const answer = item.querySelector('.faq-answer');
+      answer.style.maxHeight = answer.scrollHeight + "px";
+    }
+  });
+});
+
+// ── Cursor (Disabled on touch devices via CSS media query) ──
 const cursor = document.getElementById('cursor');
 const cursorRing = document.getElementById('cursor-ring');
 let mx = 0, my = 0, rx = 0, ry = 0;
 
 document.addEventListener('mousemove', e => {
+  // Only execute if cursor is actually visible (not a touch device)
+  if(window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
+  
   mx = e.clientX; my = e.clientY;
   cursor.style.left = mx + 'px';
   cursor.style.top = my + 'px';
 
   // Trail
-  const dot = document.createElement('div');
-  dot.className = 'cursor-dot-trail';
-  dot.style.left = mx + 'px';
-  dot.style.top = my + 'px';
-  document.body.appendChild(dot);
-  setTimeout(() => dot.remove(), 800);
+  if(Math.random() > 0.5) { 
+    const dot = document.createElement('div');
+    dot.className = 'cursor-dot-trail';
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+    document.body.appendChild(dot);
+    setTimeout(() => dot.remove(), 800);
+  }
 });
 
 function animateRing() {
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  cursorRing.style.left = rx + 'px';
-  cursorRing.style.top = ry + 'px';
+  if(!window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursorRing.style.left = rx + 'px';
+    cursorRing.style.top = ry + 'px';
+  }
   requestAnimationFrame(animateRing);
 }
 animateRing();
 
-document.querySelectorAll('a, button, .service-card, .petal-item').forEach(el => {
+// Hover effect for interactive elements
+document.querySelectorAll('a, button, .service-card, .petal-item, .floating-wa, .faq-item').forEach(el => {
   el.addEventListener('mouseenter', () => {
+    if(window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
     cursor.style.width = '20px';
     cursor.style.height = '20px';
     cursorRing.style.width = '60px';
     cursorRing.style.height = '60px';
   });
   el.addEventListener('mouseleave', () => {
+    if(window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
     cursor.style.width = '12px';
     cursor.style.height = '12px';
     cursorRing.style.width = '36px';
@@ -1463,6 +2066,7 @@ setInterval(() => goTo((current + 1) % testimonials.length), 5000);
 // ── Petal particles on click ─────────────────────────────
 const PETALS = ['🌸','🌺','✨','🍃','🌼','💫'];
 document.addEventListener('click', e => {
+  // Wapas se mobile aur desktop dono ke liye allow kar diya hai!
   for (let i = 0; i < 5; i++) {
     const p = document.createElement('div');
     p.className = 'petal-particle';
@@ -1479,9 +2083,14 @@ document.addEventListener('click', e => {
 
 // ── Parallax subtle on scroll ────────────────────────────
 window.addEventListener('scroll', () => {
+  if (window.innerWidth <= 768) return; // Disable parallax on mobile for performance
   const y = window.scrollY;
-  document.querySelector('.mandala-bg').style.transform = `translateY(calc(-50% + ${y*0.08}px))`;
-  document.querySelector('.mandala-fg').style.transform = `translateY(calc(-50% + ${y*0.05}px))`;
+  const bgMandala = document.querySelector('.mandala-bg');
+  const fgMandala = document.querySelector('.mandala-fg');
+  if (bgMandala && fgMandala) {
+    bgMandala.style.transform = `translateY(calc(-50% + ${y*0.08}px))`;
+    fgMandala.style.transform = `translateY(calc(-50% + ${y*0.05}px))`;
+  }
 });
 </script>
 </body>
